@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: channel-micro
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: channel-micro
+  template:
+    metadata:
+      labels:
+        app: channel-micro
+    spec:
+      imagePullSecrets:
+      - name: dockerhubpull
+      containers:
+        - name: service
+          image: prankster08/channel-image:latest
+          ports:
+            - containerPort: 3002
+          env:
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                  name: jwt-secret
+                  key: jwt-secret
+          - name: API_GATEWAY
+            value: abdelmoghit
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: channel-micro
+  namespace: production
+spec:
+  selector:
+    app: channel-micro
+  ports:
+    - port: 3002
+      targetPort: 3002

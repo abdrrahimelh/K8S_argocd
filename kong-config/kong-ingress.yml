@@ -1,0 +1,222 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jwt-disabled
+  namespace: production
+  annotations:
+    konghq.com/strip-path: "false"
+
+spec:
+  ingressClassName: kong
+  rules:
+    - http:
+        paths:
+          #! Front-end microservice
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ui-micro
+                port:
+                  number: 3000
+          #! Authentication microservice
+          - path: /api/auth/signup
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-micro
+                port:
+                  number: 3001
+          - path: /api/auth/signin
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-micro
+                port:
+                  number: 3001
+          - path: /api/auth/user
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-micro
+                port:
+                  number: 3001
+          - path: /api/auth/list
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-micro
+                port:
+                  number: 3001
+          - path: /api/auth/search
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-micro
+                port:
+                  number: 3001
+          - path: /api/auth/logout
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-micro
+                port:
+                  number: 3001
+          #! Channel microservice
+          - path: /api/channels/createChannel
+            pathType: Prefix
+            backend:
+              service:
+                name: channel-micro
+                port:
+                  number: 3002
+          #! Blog microservice
+          - path: /blogs
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3003
+          - path: /blogs/search
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3003
+          - path: /blogs/blogbychanid
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3003
+          - path: /blogs/blogbyid
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3003
+          #! Streaming microservice
+          - path: streaming/createchannel
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3004
+          - path: /streaming/getinfos/
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3004
+          - path: /streaming/getstreams
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3004
+          #! Streaming microservice
+          - path: /streaming/getstreams
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3004
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jwt-enabled
+  namespace: production
+  annotations:
+    konghq.com/strip-path: "false"
+    konghq.com/plugins: app-jwt
+
+spec:
+  ingressClassName: kong
+  rules:
+    - http:
+        paths:
+          #! Authentication microservice
+          - path: /api/auth/update
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-micro
+                port:
+                  number: 3001
+          - path: /api/auth/delete
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-micro
+                port:
+                  number: 3001
+          #! Channel microservice
+          - path: /api/channels/
+            pathType: Prefix
+            backend:
+              service:
+                name: channel-micro
+                port:
+                  number: 3002
+          - path: /api/channels/mychannels
+            pathType: Prefix
+            backend:
+              service:
+                name: channel-micro
+                port:
+                  number: 3002
+          - path: /api/channels/subscribe
+            pathType: Prefix
+            backend:
+              service:
+                name: channel-micro
+                port:
+                  number: 3002
+          - path: /api/channels/modify
+            pathType: Prefix
+            backend:
+              service:
+                name: channel-micro
+                port:
+                  number: 3002
+
+          #! Blog microservice
+          - path: /blogs/createblog
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3003
+          - path: /blogs/updateblog
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3003
+          - path: /blogs/deleteblog
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3003
+          #! Streaming microservice
+          - path: /streaming/deletechannel
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-micro
+                port:
+                  number: 3004

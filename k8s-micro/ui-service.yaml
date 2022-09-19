@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-micro
+  namespace: production
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: ui-micro
+  template:
+    metadata:
+      labels:
+        app: ui-micro
+    spec:
+      containers:
+        - name: service
+          image: prankster08/ui-image:latest
+          ports:
+            - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui-micro
+  namespace: production
+spec:
+  selector:
+    app: ui-micro
+  ports:
+    - port: 3000
+      targetPort: 3000

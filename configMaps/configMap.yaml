@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-map
+  namespace: production
+data:
+  apiGateway: "http://10.10.10.10"

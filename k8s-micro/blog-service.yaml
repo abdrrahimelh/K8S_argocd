@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-micro
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blog-micro
+  template:
+    metadata:
+      labels:
+        app: blog-micro
+    spec:
+      imagePullSecrets:
+      - name: dockerhubpull
+      containers:
+        - name: service
+          image: prankster08/blog-image:latest
+          ports:
+            - containerPort: 3003
+          env:
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                  name: jwt-secret
+                  key: jwt-secret 
+          - name: API_GATEWAY
+            valueFrom:
+              configMapKeyRef:
+                name: config-map
+                key: apiGateway
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog-micro
+  namespace: production
+spec:
+  selector:
+    app: blog-micro
+  ports:
+    - port: 3003
+      targetPort: 3003

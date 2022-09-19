@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-micro
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: event-micro
+  template:
+    metadata:
+      labels:
+        app: event-micro
+    spec:
+      imagePullSecrets:
+      - name: dockerhubpull
+      containers:
+        - name: service
+          image: prankster08/event-image:latest
+          ports:
+            - containerPort: 3006
+          env:
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                  name: jwt-secret
+                  key: jwt-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: event-micro
+  namespace: production
+spec:
+  selector:
+    app: event-micro
+  ports:
+    - port: 3006
+      targetPort: 3006

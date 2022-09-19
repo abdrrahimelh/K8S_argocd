@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streaming-micro
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streaming-micro
+  template:
+    metadata:
+      labels:
+        app: streaming-micro
+    spec:
+      imagePullSecrets:
+      - name: dockerhubpull
+      containers:
+        - name: service
+          image: prankster08/streaming-image:latest
+          ports:
+            - containerPort: 3004
+          env:
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                  name: jwt-secret
+                  key: jwt-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streaming-micro
+  namespace: production
+spec:
+  selector:
+    app: streaming-micro
+  ports:
+    - port: 3004
+      targetPort: 3004
